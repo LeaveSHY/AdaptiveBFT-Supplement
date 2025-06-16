@@ -2,11 +2,11 @@
 ## Citation
 
 ```bibtex
-@misc{deepgemm2025,
-      title={DeepGEMM: clean and efficient FP8 GEMM kernels with fine-grained scaling}, 
-      author={Chenggang Zhao and Liang Zhao and Jiashi Li and Zhean Xu},
+@misc{AdaptiveBFT2026,
+      title={AdaptiveBFT: Bring Adaptive Security to Pipelined BFT in Large-Scale Blockchain Applications}, 
+      author={Liang Wang and Liangmin Wang and Xia Feng and Haiqin Wu and Boris Düdder and Lu Liu},
       year={2025},
       publisher = {GitHub},
-      howpublished = {\url{https://github.com/deepseek-ai/DeepGEMM}},
+      howpublished = {\url{https://anonymous.4open.science/r/AdaptiveBFT-Supplement}},
 }
 ```
