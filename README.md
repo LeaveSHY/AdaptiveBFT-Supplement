@@ -3,9 +3,9 @@
 
 ```bibtex
 @misc{AdaptiveBFT2026,
-      title={AdaptiveBFT: Bring Adaptive Security to Pipelined BFT in Large-Scale Blockchain Applications}, 
+      title={AdaptiveBFT: Achieving Dual-Adaptability for Pipelined Consensus in Large-Scale Networks}, 
       author={Liang Wang and Liangmin Wang and Xia Feng and Haiqin Wu and Boris Düdder and Lu Liu},
-      year={2025},
+      year={2026},
       publisher = {GitHub},
       howpublished = {\url{https://anonymous.4open.science/r/ICDE-AdaptiveBFT-Supplement}},
 }
