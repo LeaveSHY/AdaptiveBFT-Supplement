@@ -1,4 +1,4 @@
-This repository contains the complete security analysis and TLA+ formal verification of the **AdaptiveBFT** consensus protocol.
+This repository contains the complete security analysis and TLA+ formal verification of **AdaptiveBFT** protocol.
 
 # AdaptiveBFT Formal Verification
 
@@ -40,25 +40,30 @@ You can use `make` for automated testing or run specific scripts directly.
 Run all verification tests:
 ```bash
 make all
+```
 
 Run specific scenarios:
 ```bash
 make test-attack   # Verify AVC Security
 make test-aps      # Verify APS Safety
+```
 
 Clean up temporary files:
 ```bash
 make clean
+```
 
 ### Option 2: Using Shell Script
 First, ensure the script is executable:
 ```bash
 chmod +x run.sh
+```
 
 Then run:
 ```bash
 ./run.sh attack   # Scenario 1
 ./run.sh aps      # Scenario 2
+```
 
 ## 🧪 Verification Scenarios
 
