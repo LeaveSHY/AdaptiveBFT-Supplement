@@ -1,9 +1,8 @@
-# AdaptiveBFT-Supplement
+This repository contains the complete security analysis and TLA+ formal verification of the **AdaptiveBFT** consensus protocol.
 
 # AdaptiveBFT Formal Verification
 
-This repository contains the formal specifications and verification models for the **AdaptiveBFT** consensus protocol.
-
+The formal specifications and verification models for **AdaptiveBFT** are ready.
 It utilizes **TLA+** to model the protocol's core logic, focusing on its two novel mechanisms:
 1.  **Adaptive View-Change (AVC)**: A reputation-based leader election mechanism (RVS).
 2.  **Adaptive Pipeline Scheduling (APS)**: A dynamic parameter reconfiguration scheduler.
@@ -28,6 +27,7 @@ AdaptiveBFT-Verification/
 └── models/                         # Model Checking Scenarios (Tests)
     ├── MC_AdaptiveAttack.tla/.cfg  # Scenario 1: Adaptive Primary Corruption
     └── MC_LivenessAPS.tla/.cfg     # Scenario 2: Dynamic Reconfiguration Safety
+```
 
 ## 🛠 Prerequisites
 * **Java Runtime Environment (JRE)**: Version 11 or higher.
