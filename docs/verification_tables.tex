@@ -1,0 +1,256 @@
+% Appendix-ready verification tables for AdaptiveBFT.
+% Suggested preamble packages:
+% \usepackage{booktabs}
+% \usepackage{tabularx}
+% \usepackage{threeparttable}
+% \usepackage{array}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{AdaptiveBFT verification settings and checked property profile.}
+\label{tab:adaptivebft-verif-settings}
+\begin{threeparttable}
+\begin{tabularx}{\textwidth}{@{}lYp{0.18\textwidth}p{0.19\textwidth}@{}}
+\toprule
+Model & Assumptions & Invariants (abbr.) & Liveness target \\
+\midrule
+MC\_AdaptiveAttack &
+$f=1$, $n=4$, $q=3$; Node $=\{r1,r2,r3,r4\}$; bounded transaction/pipeline/view/timeout/reputation domains; \texttt{MaxAttackCount=1}; quorum-compressed vote/ack transitions &
+I1--I13 + B1--B3\tnote{a,d} &
+W-A*\tnote{c} \\
+MC\_LivenessAPS &
+Same bounded domain as left (without attack bound); fairness-structured liveness wrapper &
+I1--I13 + B1--B3\tnote{a,d} &
+L1 + W-P*\tnote{c} \\
+MC\_LivenessAPSAttack &
+Same bounded domain as left + \texttt{MaxAttackCount=1}; joint fairness and recovery wrapper &
+I1--I13 + B1--B3\tnote{a,d} &
+L2 + W-J*\tnote{c} \\
+MC\_RefinementTransfer &
+Same bounded constants as baseline/mv3/mv4; transfer constraint
+(\texttt{schedulerState=Monitor}, stable network, initial view/chain) &
+I1--I13 + B1--B3\tnote{a,d} &
+T0--T4\tnote{b} \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}
+\footnotesize
+\item[a] I1 TypeOK; I2 Consistency; I3 NoForkPerView; I4 PipelineBounded; I5 QCLocked; I6 QCViewSafety; I7 MempoolSoundness; I8 ProposalFlowSafety; I9 ViewChangeMessageSafety; I10 ChainParentSafety; I11 PrimaryEligibilitySafety; I12 ReconfigurationSafety; I13 DecoupledPipelineSafety.
+\item[b] Transfer checks: T0 InitProjectionChecked; T1 StepProjectionChecked; T2 StepBoxProjectionChecked; T3 SpecProjectionChecked; T4 SpecToAbstractSpecChecked.
+\item[c] Wrapper projection families:
+W-A* = attack wrapper projection checks (Init/Step/StepBox/Spec/SpecToAbstractSpec);
+W-P* and W-J* denote the same five check kinds for APS and Joint wrappers.
+\item[d] Wrapper finite bridge diagnostics:
+B1 RefinementInvariantCore*; B2 SafetyBridgeFinite*; B3 CommitProjectionShape*
+(\texttt{Attack}/\texttt{APS}/\texttt{Joint}/\texttt{Transfer} suffix by model).
+\end{tablenotes}
+\end{threeparttable}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption{AdaptiveBFT deepened-profile TLC outcomes (\texttt{MaxView=5}, bounded full-suite).}
+\label{tab:adaptivebft-verif-results-mv5}
+\begin{threeparttable}
+\begin{tabularx}{\textwidth}{@{}lrrrrcY@{}}
+\toprule
+Model & States Generated & Distinct States & Diameter & Time & TLC Result & Claim Scope \\
+\midrule
+MC\_AdaptiveAttack & 299,733 & 86,886 & 80 & 01min 42s & Pass & Safety + W-A* \\
+MC\_LivenessAPS & 20,143 & 6,053 & 115 & 01min 14s & Pass & Safety + L1 + W-P* \\
+MC\_LivenessAPSAttack & 143,795 & 45,553 & 124 & 01min 39s & Pass & Safety + L2 + W-J* \\
+MC\_RefinementTransfer & 269,339 & 47,796 & 30 & 01min 27s & Pass & T0--T4 \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}
+\footnotesize
+\item Snapshot source: \texttt{make suite-mv5} (artifact: \texttt{docs/results/mv5\_suite\_latest.md}, executed on 2026-02-21).
+\item This is bounded finite-domain evidence with deeper view depth; it is not an unbounded theorem proof.
+\end{tablenotes}
+\end{threeparttable}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption{AdaptiveBFT quick n=7 profile outcome (\texttt{n=7}, \texttt{f=2}, \texttt{q=5}, \texttt{MaxView=1}).}
+\label{tab:adaptivebft-verif-results-n7lite}
+\begin{threeparttable}
+\begin{tabularx}{\textwidth}{@{}lrrrrcY@{}}
+\toprule
+Model & States Generated & Distinct States & Diameter & Time & TLC Result & Claim Scope \\
+\midrule
+MC\_AdaptiveAttack (\texttt{n7lite}) & 5,009 & 1,454 & 39 & 03min 19s & Pass & Safety + W-A* \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}
+\footnotesize
+\item Snapshot source: \texttt{make scale-n7lite} (artifact: \texttt{docs/results/scale\_n7lite\_suite\_latest.md}, executed on 2026-02-21).
+\item Invariant profile: \texttt{TypeOKLite} + I2--I13 (scalable field-level typing for large constructor domains).
+\item This profile is a bounded quick sanity check, not an unbounded theorem proof.
+\end{tablenotes}
+\end{threeparttable}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption{AdaptiveBFT bounded scale-sanity outcome (\texttt{n=7}, \texttt{f=2}, \texttt{q=5}, \texttt{MaxView=2}).}
+\label{tab:adaptivebft-verif-results-n7}
+\begin{threeparttable}
+\begin{tabularx}{\textwidth}{@{}lrrrrcY@{}}
+\toprule
+Model & States Generated & Distinct States & Diameter & Time & TLC Result & Claim Scope \\
+\midrule
+MC\_AdaptiveAttack (\texttt{n7}) & 15,045 & 4,366 & 49 & 04min 50s & Pass & Safety + W-A* \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}
+\footnotesize
+\item Snapshot source: \texttt{make scale-n7} (artifact: \texttt{docs/results/scale\_n7\_attack\_latest.md}, executed on 2026-02-21).
+\item Invariant profile: \texttt{TypeOKLite} + I2--I13 (scalable field-level typing for large constructor domains).
+\item This profile is a bounded scale sanity check, not an unbounded theorem proof.
+\end{tablenotes}
+\end{threeparttable}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption{AdaptiveBFT refinement-transfer TLC outcomes (bounded diagnostics).}
+\label{tab:adaptivebft-transfer-results}
+\begin{threeparttable}
+\begin{tabularx}{\textwidth}{@{}lrrrrcY@{}}
+\toprule
+Profile & States Generated & Distinct States & Diameter & Time & TLC Result & Checked Properties \\
+\midrule
+baseline (\texttt{MaxView=2}) & 269,339 & 47,796 & 30 & 01min 10s & Pass & T0--T4 \\
+\texttt{MaxView=3} & 269,339 & 47,796 & 30 & 01min 21s & Pass & T0--T4 \\
+\texttt{MaxView=4} & 269,339 & 47,796 & 30 & 01min 21s & Pass & T0--T4 \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}
+\footnotesize
+\item Commands: \texttt{make test-transfer}, \texttt{make test-transfer-mv3}, \texttt{make test-transfer-mv4} (executed on 2026-02-21).
+\item T0--T4 definitions are listed in \Cref{tab:adaptivebft-verif-settings}.
+\item Transfer diagnostics are bounded and constraint-scoped; they provide executable evidence for concrete-step to abstract-step/stutter alignment, not a closed unbounded refinement proof.
+\end{tablenotes}
+\end{threeparttable}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption{AdaptiveBFT wrapper-integrated projection outcomes (baseline and \texttt{MaxView=4}).}
+\label{tab:adaptivebft-wrapper-projection}
+\begin{threeparttable}
+\begin{tabularx}{\textwidth}{@{}p{0.10\textwidth}p{0.20\textwidth}rrrcY@{}}
+\toprule
+Profile & Model & States Generated & Distinct States & Diameter & Time & Checked Projection Properties \\
+\midrule
+baseline & MC\_AdaptiveAttack & 15,045 & 4,366 & 49 & 11s & W-A* \\
+baseline & MC\_LivenessAPS & 10,087 & 3,035 & 63 & 13s & W-P* \\
+baseline & MC\_LivenessAPSAttack & 45,095 & 14,737 & 73 & 21s & W-J* \\
+MaxView=4 & MC\_AdaptiveAttack & 113,041 & 32,774 & 70 & 43s & W-A* \\
+MaxView=4 & MC\_LivenessAPS & 16,791 & 5,047 & 98 & 39s & W-P* \\
+MaxView=4 & MC\_LivenessAPSAttack & 104,191 & 33,269 & 107 & 01min 01s & W-J* \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}
+\footnotesize
+\item Snapshot source: \texttt{make wrapper-projection} (latest artifact:
+\texttt{docs/results/wrapper\_projection\_latest.md}, executed on 2026-02-21).
+\item W-A*/W-P*/W-J* abbreviations are defined in \Cref{tab:adaptivebft-verif-settings}.
+\item These checks are bounded finite-domain diagnostics integrated into the main wrappers.
+\end{tablenotes}
+\end{threeparttable}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption{AdaptiveBFT TLC outcomes (bounded model checking, baseline profile).}
+\label{tab:adaptivebft-verif-results}
+\begin{threeparttable}
+\begin{tabularx}{\textwidth}{@{}lrrrrcY@{}}
+\toprule
+Model & States Generated & Distinct States & Diameter & Time & TLC Result & Claim Scope \\
+\midrule
+MC\_AdaptiveAttack & 15,045 & 4,366 & 49 & 5s & Pass & Safety only \\
+MC\_LivenessAPS & 10,087 & 3,035 & 63 & $<1$s & Pass & Safety + L1 \\
+MC\_LivenessAPSAttack & 45,095 & 14,737 & 73 & 20s & Pass & Safety + L2 \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}
+\footnotesize
+\item Snapshot source: command \texttt{make matrix} (executed on 2026-02-15, after weighted-strike RVS upgrade).
+\item Runtime platform: AMD Ryzen 7 7840H, 16 vCPUs, 15\,GiB RAM, Linux (WSL2 Ubuntu), Java \texttt{-Xmx8G}.
+\item Worker policy: \texttt{MC\_AdaptiveAttack} uses 4 workers; liveness models use \texttt{-workers auto}.
+\item These are bounded finite-domain model-checking results, not unbounded theorem proofs.
+\end{tablenotes}
+\end{threeparttable}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption{AdaptiveBFT deeper-profile TLC outcomes (\texttt{MaxView=3}, bounded model checking).}
+\label{tab:adaptivebft-verif-results-mv3}
+\begin{threeparttable}
+\begin{tabularx}{\textwidth}{@{}lrrrrcY@{}}
+\toprule
+Model & States Generated & Distinct States & Diameter & Time & TLC Result & Claim Scope \\
+\midrule
+MC\_AdaptiveAttack & 5,936,703 & 1,196,611 & 69 & 7m39s & Pass & Safety only \\
+MC\_LivenessAPS & 14,762,371 & 3,405,172 & 89 & 59m13s & Pass & Safety + L1 \\
+MC\_LivenessAPSAttack & 56,392,041 & 14,807,882 & 98 & 3h24m & Pass & Safety + L2 \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}
+\footnotesize
+\item Snapshot source: \texttt{make test-attack-mv3}, \texttt{make test-aps-mv3}, \texttt{make test-joint-mv3} (executed on 2026-02-15).
+\item Runtime platform: AMD Ryzen 7 7840H, 16 vCPUs, 15\,GiB RAM, Linux (WSL2 Ubuntu), Java \texttt{-Xmx8G}.
+\item Worker policy: \texttt{MC\_AdaptiveAttack} uses 4 workers; liveness models use \texttt{-workers auto}.
+\item These are bounded finite-domain model-checking results, not unbounded theorem proofs.
+\end{tablenotes}
+\end{threeparttable}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption{AdaptiveBFT strengthened-profile TLC outcomes (\texttt{MaxView=4}, bounded model checking).}
+\label{tab:adaptivebft-verif-results-mv4}
+\begin{threeparttable}
+\begin{tabularx}{\textwidth}{@{}lrrrrcY@{}}
+\toprule
+Model & States Generated & Distinct States & Diameter & Time & TLC Result & Claim Scope \\
+\midrule
+MC\_AdaptiveAttack & 113,041 & 32,774 & 70 & 21s & Pass & Safety only \\
+MC\_LivenessAPS & 16,791 & 5,047 & 97 & 39s & Pass & Safety + L1 \\
+MC\_LivenessAPSAttack & 104,191 & 33,269 & 106 & 55s & Pass & Safety + L2 \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}
+\footnotesize
+\item Snapshot source: \texttt{make test-attack-mv4}, \texttt{make test-aps-mv4}, \texttt{make test-joint-mv4} (executed on 2026-02-15).
+\item Runtime platform: AMD Ryzen 7 7840H, 16 vCPUs, 15\,GiB RAM, Linux (WSL2 Ubuntu), Java \texttt{-Xmx8G}.
+\item Worker policy: \texttt{MC\_AdaptiveAttack} uses 4 workers; liveness models use \texttt{-workers auto}.
+\item Strengthened profile parameters keep $n=4$, $f=1$, and $q=3$, changing only \texttt{MaxView} from 2 to 4.
+\item These are bounded finite-domain model-checking results, not unbounded theorem proofs.
+\end{tablenotes}
+\end{threeparttable}
+\end{table*}

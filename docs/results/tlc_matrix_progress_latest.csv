@@ -1,0 +1,10 @@
+profile,model,result,states_generated,distinct_states,diameter,wall_clock,log_file
+baseline,attack,PASS,15045,4366,49,"08s",/mnt/c/Users/Administrator/Desktop/BFT papers/Quantum_BFT/TetraBFT/TetraBFT_test/AdaptiveBFT-Formal-Verification/models/_matrix_baseline_attack.out
+baseline,aps,PASS,10087,3035,64,"11s",/mnt/c/Users/Administrator/Desktop/BFT papers/Quantum_BFT/TetraBFT/TetraBFT_test/AdaptiveBFT-Formal-Verification/models/_matrix_baseline_aps.out
+baseline,joint,PASS,45095,14737,73,"29s",/mnt/c/Users/Administrator/Desktop/BFT papers/Quantum_BFT/TetraBFT/TetraBFT_test/AdaptiveBFT-Formal-Verification/models/_matrix_baseline_joint.out
+mv3,attack,TIMEOUT,,,,">600s (timeout)",/mnt/c/Users/Administrator/Desktop/BFT papers/Quantum_BFT/TetraBFT/TetraBFT_test/AdaptiveBFT-Formal-Verification/models/_matrix_mv3_attack.out
+mv3,aps,TIMEOUT,,,,">600s (timeout)",/mnt/c/Users/Administrator/Desktop/BFT papers/Quantum_BFT/TetraBFT/TetraBFT_test/AdaptiveBFT-Formal-Verification/models/_matrix_mv3_aps.out
+mv3,joint,TIMEOUT,,,,">600s (timeout)",/mnt/c/Users/Administrator/Desktop/BFT papers/Quantum_BFT/TetraBFT/TetraBFT_test/AdaptiveBFT-Formal-Verification/models/_matrix_mv3_joint.out
+mv4,attack,PASS,113041,32774,71,"54s",/mnt/c/Users/Administrator/Desktop/BFT papers/Quantum_BFT/TetraBFT/TetraBFT_test/AdaptiveBFT-Formal-Verification/models/_matrix_mv4_attack.out
+mv4,aps,PASS,16791,5047,98,"40s",/mnt/c/Users/Administrator/Desktop/BFT papers/Quantum_BFT/TetraBFT/TetraBFT_test/AdaptiveBFT-Formal-Verification/models/_matrix_mv4_aps.out
+mv4,joint,PASS,104191,33269,106,"01min 06s",/mnt/c/Users/Administrator/Desktop/BFT papers/Quantum_BFT/TetraBFT/TetraBFT_test/AdaptiveBFT-Formal-Verification/models/_matrix_mv4_joint.out

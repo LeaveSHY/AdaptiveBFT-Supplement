@@ -1,0 +1,147 @@
+AdaptiveBFT-Formal-Verification/
+|- docs/
+|  |- results/
+|  |  |- campaign_snapshot_latest.md
+|  |  |- concrete_tlaps_probe_latest.md
+|  |  |- day1_execution_latest.md
+|  |  |- fastlane_release_latest.md
+|  |  |- mv5_suite_latest.md
+|  |  |- proof_blockers_latest.md
+|  |  |- proof_snapshot_latest.md
+|  |  |- release_status_latest.md
+|  |  |- safety_transfer_closure_attempt_latest.md
+|  |  |- safety_transfer_closure_trend_latest.md
+|  |  |- safety_transfer_failure_taxonomy_latest.md
+|  |  |- safety_transfer_goalpack_latest.md
+|  |  |- scale_n7_attack_latest.md
+|  |  |- scale_n7lite_full_suite_latest.md
+|  |  |- scale_n7lite_suite_latest.md
+|  |  |- strong_claim_bundle_latest.md
+|  |  |- submission_artifact_manifest_latest.md
+|  |  |- submission_package_check_latest.md
+|  |  |- submission_rc_latest.md
+|  |  |- submission_ready_latest.md
+|  |  |- tlc_matrix_progress_latest.csv
+|  |  |- transfer_snapshot_latest.md
+|  |  `- wrapper_projection_latest.md
+|  |- assumption_to_evidence_map.md
+|  |- claim_boundary.md
+|  |- final_repo_tree.txt
+|  |- formal_figures.tex
+|  |- github_submission_manifest.md
+|  |- paper_claim_text.tex
+|  |- proof_roadmap.md
+|  |- reviewer_checklist.md
+|  |- submission_guide.md
+|  `- verification_tables.tex
+|- models/
+|  |- MC_AdaptiveAttack.cfg
+|  |- MC_AdaptiveAttack.tla
+|  |- MC_AdaptiveAttack_MV3.cfg
+|  |- MC_AdaptiveAttack_MV4.cfg
+|  |- MC_AdaptiveAttack_MV5.cfg
+|  |- MC_AdaptiveAttack_N7.cfg
+|  |- MC_AdaptiveAttack_N7LITE.cfg
+|  |- MC_LivenessAPS.cfg
+|  |- MC_LivenessAPS.tla
+|  |- MC_LivenessAPS_MV3.cfg
+|  |- MC_LivenessAPS_MV4.cfg
+|  |- MC_LivenessAPS_MV5.cfg
+|  |- MC_LivenessAPS_N7.cfg
+|  |- MC_LivenessAPS_N7LITE.cfg
+|  |- MC_LivenessAPSAttack.cfg
+|  |- MC_LivenessAPSAttack.tla
+|  |- MC_LivenessAPSAttack_MV3.cfg
+|  |- MC_LivenessAPSAttack_MV4.cfg
+|  |- MC_LivenessAPSAttack_MV5.cfg
+|  |- MC_LivenessAPSAttack_N7.cfg
+|  |- MC_LivenessAPSAttack_N7LITE.cfg
+|  |- MC_RefinementTransfer.cfg
+|  |- MC_RefinementTransfer.tla
+|  |- MC_RefinementTransfer_MV3.cfg
+|  |- MC_RefinementTransfer_MV4.cfg
+|  |- MC_RefinementTransfer_MV5.cfg
+|  |- MC_RefinementTransfer_N7.cfg
+|  `- MC_RefinementTransfer_N7LITE.cfg
+|- modules/
+|  |- APS_Mempool.pdf
+|  |- APS_Scheduler.pdf
+|  `- AVC_RVS.pdf
+|- scripts/
+|  |- build_campaign_snapshot.py
+|  |- build_proof_blockers.py
+|  |- build_proof_snapshot.py
+|  |- build_release_status.py
+|  |- build_safety_transfer_closure_trend.py
+|  |- build_safety_transfer_failure_taxonomy.py
+|  |- build_submission_artifact_manifest.py
+|  |- build_submission_bundle.py
+|  |- build_submission_rc.py
+|  |- build_transfer_snapshot.py
+|  |- check_aux_sync.py
+|  |- check_bridge_invariants.py
+|  |- check_claim_artifacts.py
+|  |- check_proof_track.sh
+|  |- check_snapshot_dates_sync.py
+|  |- check_submission_package.py
+|  |- check_tables_sync.py
+|  |- check_theorem_coverage.py
+|  |- ensure_tex_no_page_numbers.py
+|  |- run_concrete_tlaps_probe.py
+|  |- run_fastlane_release.sh
+|  |- run_matrix.sh
+|  |- run_mv5_suite.sh
+|  |- run_safety_transfer_closure_attempt.py
+|  |- run_scale_attack_n7.sh
+|  |- run_scale_n7lite_suite.sh
+|  |- run_strong_claim_bundle.sh
+|  |- run_submission_ready.sh
+|  |- run_wrapper_projection.sh
+|  |- sync_snapshot_rows.py
+|  `- sync_wrapper_table.py
+|- specifications/
+|  |- modules/
+|  |  |- APS_DecoupledPipeline.tla
+|  |  |- APS_Mempool.tla
+|  |  |- APS_Scheduler.tla
+|  |  |- AVC_RVS.tla
+|  |  |- FiniteSetTheorems.tla
+|  |  |- Functions.tla
+|  |  |- Mempool.tla
+|  |  |- NaturalsInduction.tla
+|  |  |- Reputation_Game.tla
+|  |  |- RVS_CryptoAbstraction.tla
+|  |  |- TLAPS.tla
+|  |  `- WellFoundedInduction.tla
+|  |- AdaptiveBFT.tla
+|  |- AdaptiveBFT_Abstract.tla
+|  |- AdaptiveBFT_AbstractBridge_Theorems.tla
+|  |- AdaptiveBFT_ConcreteBinding_Theorems.tla
+|  |- AdaptiveBFT_ConcreteBridge_Theorems.tla
+|  |- AdaptiveBFT_ConcreteTransfer_Theorems.tla
+|  |- AdaptiveBFT_Invariant_Theorems.tla
+|  |- AdaptiveBFT_Liveness_Theorems.tla
+|  |- AdaptiveBFT_MainClaim_Theorems.tla
+|  |- AdaptiveBFT_MainFlow.tla
+|  |- AdaptiveBFT_Properties.tla
+|  |- AdaptiveBFT_Refinement.tla
+|  |- AdaptiveBFT_Refinement_Kernel.tla
+|  |- AdaptiveBFT_Refinement_Theorems.tla
+|  |- AdaptiveBFT_Theorems.tla
+|  |- AdaptiveBFT_Transfer_Kernel.tla
+|  `- AdaptiveBFT_Types.tla
+|- tla2sany/
+|  `- StandardModules/
+|     `- TLC.tla
+|- .gitignore
+|- AdaptiveBFT.pdf
+|- AdaptiveBFT_MainFlow.pdf
+|- AdaptiveBFT_Properties.pdf
+|- AdaptiveBFT_Types.pdf
+|- APPENDIX A.pdf
+|- APPENDIX B.pdf
+|- APPENDIX_B_source.tex
+|- Makefile
+|- README.md
+|- run.sh
+`- tla2tools.jar

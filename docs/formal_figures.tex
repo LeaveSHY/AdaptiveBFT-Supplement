@@ -1,0 +1,461 @@
+% AdaptiveBFT: paper-ready formal-specification section (Sailfish++-style split).
+% Suggested preamble packages:
+% \usepackage{graphicx}
+% \usepackage{cleveref}
+% \usepackage{enumitem}
+% \usepackage{booktabs}
+% \usepackage{threeparttable}
+
+% \appendices
+\section{TLA+ Formal Specification and Verification}
+\label{Appendix: Formal Specification}
+
+To rigorously validate the safety and liveness properties of AdaptiveBFT,
+particularly its \textit{Adaptive View-Change} (AVC) and
+\textit{Adaptive Pipeline Scheduling} (APS) mechanisms,
+we developed a comprehensive TLA+ formal specification and checked it with TLC.
+
+\subsection{AdaptiveBFT Formalization Structure}
+\label{sec:abft-spec-structure}
+
+A formal specification of AdaptiveBFT appears in
+\Cref{fig:abft-main-spec}, with supporting definitions in
+\Cref{fig:abft-types-spec,fig:abft-avc-rvs-spec,fig:abft-aps-mempool-spec}
+and correctness properties in \Cref{fig:abft-properties-spec}.
+
+The split follows a five-figure, reviewer-friendly structure:
+\begin{enumerate}[noitemsep,leftmargin=*]
+    \item Main protocol state-machine excerpt (Fig.~10).
+    \item Message/proposal/state type system (Fig.~11).
+    \item AVC + RVS support definitions (Fig.~12).
+    \item APS + mempool support definitions (Fig.~13).
+    \item Correctness properties only (Fig.~14).
+\end{enumerate}
+
+In addition to this split view, we also provide two complementary rendered
+artifacts in the repository root/module folder:
+\texttt{AdaptiveBFT.pdf} (monolithic consolidated rendering) and
+\texttt{APS\_Scheduler.pdf} (scheduler-focused support rendering).
+
+% Force these five figures to appear as Fig.10--Fig.14 if needed.
+\setcounter{figure}{9}
+
+\subsection{Modeling Scope and Abstractions}
+\label{sec:abft-formal-assumptions}
+
+To keep exhaustive TLC exploration tractable without obscuring the core
+protocol logic, we make the following explicit abstractions:
+\begin{enumerate}[label=\textbf{A\arabic*:}, itemsep=0.25ex, topsep=0.5ex, leftmargin=*]
+    \item \textbf{Bounded BFT domain.}
+    The baseline model instantiates $f=1$, $n=3f+1=4$, and
+    $q=2f+1=3$, with finite bounds on views, batching, pipeline depth,
+    timeout, reputation range, and transaction set.
+
+    \item \textbf{Typed message/proposal semantics.}
+    Protocol artifacts (\textsc{MinorMessage}, \textsc{FullMessage},
+    \textsc{TeProposal}, \textsc{VProposal}, \textsc{NPMessage},
+    \textsc{SynMessage}) are represented as typed TLA+ records.
+
+    \item \textbf{Cryptographic abstraction.}
+    QC checks and RVS/VRF behavior are encoded as deterministic typed
+    operators over bounded domains with explicit witness validation;
+    cryptographic hardness assumptions remain out of model scope.
+
+    \item \textbf{Timer and network abstraction.}
+    Timeout and delay effects are represented via symbolic state
+    (\texttt{stageTimer}, timeout votes, \texttt{Stable}/\texttt{Unstable})
+    rather than packet-level or wall-clock models.
+
+    \item \textbf{Adaptive adversary abstraction.}
+    Adaptive corruption is modeled as bounded perturbation transitions
+    parameterized by \texttt{MaxAttackCount} in attack-enabled configurations.
+
+    \item \textbf{Reputation-game abstraction.}
+    Bayesian-report normalization, finite PageRank-style updates, and
+    payoff/cost-based truthful-report utilities are encoded as finite
+    operators over bounded report/reputation domains.
+
+    \item \textbf{APS control-plane abstraction.}
+    Adaptive scheduling is modeled as a finite reconfiguration loop
+    over five abstract states:
+    \linebreak[2] Monitor, Sample, Estimate, Explore, and Deploy,
+    \linebreak[2] with finite candidate configurations.
+
+    \item \textbf{Eventual synchrony abstraction.}
+    Liveness is checked under explicit fairness constraints in the liveness
+    wrappers, capturing eventual progress after unstable episodes.
+
+    \item \textbf{Safety-wrapper quorum compression.}
+    In \texttt{MC\_AdaptiveAttack}, per-replica vote/ack interleavings are
+    collapsed into quorum-completion steps to keep adaptive-attack safety
+    exploration tractable.
+\end{enumerate}
+These assumptions define the exact claim boundary of the model-checking
+results reported below.
+
+\subsection{Checked Properties and TLC Results}
+\label{sec:abft-formal-results}
+
+The correctness profile in \Cref{fig:abft-properties-spec} consists of
+13 safety invariants (I1--I13), an aggregate \texttt{Safety} formula,
+and temporal liveness goals (\texttt{Liveness} and related progress formulas).
+
+\paragraph{Baseline claim (\texttt{MaxView=2}).}
+Using the TLC model-checker, we are able to check that all possible executions
+of the bounded AdaptiveBFT model in a 4-node system with one Byzantine node
+satisfy the \texttt{safety} and \texttt{liveness} properties in
+\Cref{fig:abft-properties-spec} under the eventual-synchrony abstraction
+(encoded by fairness constraints), for a maximum of 3 protocol rounds
+(views $0..2$). In this baseline setting, the full campaign
+(\texttt{MC\_AdaptiveAttack}, \texttt{MC\_LivenessAPS},
+\texttt{MC\_LivenessAPSAttack}) completes in about 26 seconds on an
+AMD Ryzen 7 7840H platform (16 vCPUs, 15\,GiB RAM, Java \texttt{-Xmx8G}),
+with no TLC-reported
+invariant or temporal-property violations.
+
+\paragraph{Strengthened claim (\texttt{MaxView=4}).}
+To increase depth coverage, we provide a strengthened profile that changes
+only \texttt{MaxView} from 2 to 4 (all other constants fixed).
+Under this profile, TLC reports no invariant or temporal-property violation:
+\texttt{MC\_AdaptiveAttack} explores 113{,}041 generated states
+(32{,}774 distinct) in 21s, \texttt{MC\_LivenessAPS} explores
+16{,}791 generated states (5{,}047 distinct) in 39s, and
+\texttt{MC\_LivenessAPSAttack} explores 104{,}191 generated states
+(33{,}269 distinct) in 55s.
+
+\paragraph{Refinement-transfer diagnostics.}
+To reduce the remaining gap between bounded concrete exploration and the
+abstract theorem layer, we additionally check a dedicated transfer wrapper
+(\texttt{MC\_RefinementTransfer}) that enforces
+\texttt{StepProjectionChecked} and \texttt{StepBoxProjectionChecked}
+under a tractable state-space constraint.
+In baseline/\texttt{MaxView=3}/\texttt{MaxView=4} profiles, TLC reports
+no transfer-property violation and explores
+269{,}339 generated states (47{,}796 distinct, diameter 30), with runtime
+1m10s/1m21s/1m21s, respectively.
+In addition, we embed wrapper-level transfer checks directly in
+\texttt{MC\_AdaptiveAttack}, \texttt{MC\_LivenessAPS}, and
+\texttt{MC\_LivenessAPSAttack}; these also pass in baseline and
+\texttt{MaxView=4} runs.
+
+Detailed state-space scale and per-model runtime are reported in
+\Cref{tab:adaptivebft-verif-settings,tab:adaptivebft-verif-results,tab:adaptivebft-verif-results-mv3,tab:adaptivebft-verif-results-mv4,tab:adaptivebft-verif-results-mv5,tab:adaptivebft-transfer-results,tab:adaptivebft-wrapper-projection,tab:adaptivebft-verif-results-n7lite,tab:adaptivebft-verif-results-n7}.
+
+
+\begin{figure*}[!ht]
+    \footnotesize
+    \begin{boxedminipage}[t]{\textwidth}
+        \textbf{Local variables:}
+        \setlist{nolistsep}
+        \begin{itemize}[noitemsep]
+            \item[] transition families $M_1,M_2,M_3,M_4$:
+            \begin{itemize}[noitemsep]
+                \item[] $M_1$: ingress + pre-validation
+                \item[] $M_2$: APS control loop
+                \item[] $M_3$: consensus pipeline
+                \item[] $M_4$: AVC + RVS + sync update
+            \end{itemize}
+            \item[] $Next \triangleq M_1 \lor M_2 \lor M_3 \lor M_4$
+        \end{itemize}
+
+        \begin{algorithmic}[1]
+            \Procedure{MOne}{} \Comment{MainFlow:9--12}
+            \State \Return $InjectTxStep \lor PreValidateStep \lor AgeTxStep$
+            \EndProcedure
+
+            \Procedure{MTwo}{} \Comment{MainFlow:14--19}
+            \State \Return $DetectAnomaly \lor SampleGrid \lor EstimateGrid$
+            \Statex \hspace{\algorithmicindent}$\lor ExploreGrid \lor DeployConfig$
+            \EndProcedure
+            \algstore{abftf10a}
+        \end{algorithmic}
+
+        \vspace{0.4em}
+        \begin{minipage}{0.48\textwidth}
+            \begin{algorithmic}
+                \algrestore{abftf10a}
+                \Procedure{MThree}{} \Comment{MainFlow:21--30}
+                \State \Return $PreOrder \lor GenTentative \lor RecoverFull$
+                \Statex \hspace{\algorithmicindent}$\lor PrepareVote \lor PrepareQC$
+                \Statex \hspace{\algorithmicindent}$\lor PreCommitVote \lor PreCommitQC$
+                \Statex \hspace{\algorithmicindent}$\lor CommitVote \lor DecideBlock$
+                \EndProcedure
+                \algstore{abftf10b}
+            \end{algorithmic}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.48\textwidth}
+            \begin{algorithmic}
+                \algrestore{abftf10b}
+                \Procedure{MFour}{} \Comment{MainFlow:32--40}
+                \State \Return $Tick \lor CastTimeoutVote \lor StartViewChange$
+                \Statex \hspace{\algorithmicindent}$\lor BroadcastNP \lor ConfirmNewPrimary$
+                \Statex \hspace{\algorithmicindent}$\lor BroadcastSyn \lor SendSynAck$
+                \Statex \hspace{\algorithmicindent}$\lor CompleteViewChange$
+                \EndProcedure
+
+                \Procedure{Next}{} \Comment{MainFlow:42--46}
+                \State \Return $MOne \lor MTwo \lor MThree \lor MFour$
+                \EndProcedure
+            \end{algorithmic}
+        \end{minipage}
+    \end{boxedminipage}
+    \caption{High-level TLA+ state-machine excerpt of AdaptiveBFT.}
+    \label{fig:abft-main-spec}
+\end{figure*}
+
+\begin{figure*}[!ht]
+    \footnotesize
+    \begin{boxedminipage}[t]{\textwidth}
+        \textbf{Local variables:}
+        \setlist{nolistsep}
+        \begin{itemize}[noitemsep]
+            \item[] universes: $MsgType$, $ConsensusPhase$, $SchedulerStateType$, $NetworkConditionType$
+            \item[] record tags: \texttt{Minor}, \texttt{Full}, \texttt{TeProposal}, \texttt{ReProposal}, \texttt{VProposal}, \texttt{NPMessage}, \texttt{SynMessage}
+            \item[] helper operators: $QC(view)$, $NilQC$, $SamePrefix$
+        \end{itemize}
+
+        \begin{algorithmic}[1]
+            \Procedure{MkMinor}{$v,a,q,s$} \Comment{Types:23--24}
+            \State \Return $\langle\texttt{Minor},v,a,q,s\rangle$
+            \EndProcedure
+
+            \Procedure{MkFull}{$v,tx,q,p,s$} \Comment{Types:26--27}
+            \State \Return $\langle\texttt{Full},v,tx,q,p,s\rangle$
+            \EndProcedure
+            \algstore{abftf11a}
+        \end{algorithmic}
+
+        \vspace{0.4em}
+        \begin{minipage}{0.48\textwidth}
+            \begin{algorithmic}
+                \algrestore{abftf11a}
+                \Procedure{MkTe}{$v,al,q,p,s$}
+                \State \Return $\langle\texttt{TeProposal},v,al,q,p,s\rangle$
+                \EndProcedure
+
+                \Procedure{MkRe}{$v,tx,q,p,s$}
+                \State \Return $\langle\texttt{ReProposal},v,tx,q,p,s\rangle$
+                \EndProcedure
+
+                \Procedure{MkV}{$v,rv,q,p,s$}
+                \State \Return $\langle\texttt{VProposal},v,rv,q,p,s\rangle$
+                \EndProcedure
+                \algstore{abftf11b}
+            \end{algorithmic}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.48\textwidth}
+            \begin{algorithmic}
+                \algrestore{abftf11b}
+                \Procedure{MkNP}{$v,l,t,k,\pi,q,s$}
+                \State \Return $\langle\texttt{NPMessage},v,l,t,k,\pi,q,s\rangle$
+                \EndProcedure
+
+                \Procedure{MkSyn}{$v,l,rv,q,s$}
+                \State \Return $\langle\texttt{SynMessage},v,l,rv,q,s\rangle$
+                \EndProcedure
+
+                \Procedure{SamePrefix}{$s_1,s_2$}
+                \State $m \gets MinNat(Len(s_1),Len(s_2))$
+                \State \Return $\forall i \in 1..m: s_1[i]=s_2[i]$
+                \EndProcedure
+            \end{algorithmic}
+        \end{minipage}
+    \end{boxedminipage}
+    \caption{TLA+ type and record definitions for messages, proposals, and protocol state.}
+    \label{fig:abft-types-spec}
+\end{figure*}
+
+\begin{figure*}[!ht]
+    \footnotesize
+    \begin{boxedminipage}[t]{\textwidth}
+        \textbf{Local variables:}
+        \setlist{nolistsep}
+        \begin{itemize}[noitemsep]
+            \item[] $rep[n]$: bounded reputation
+            \item[] $thr, view, \kappa$: threshold, epoch, strike parameter
+            \item[] evidence tuple $ev=\langle ticket,strikes,proof\rangle$
+        \end{itemize}
+
+        \begin{algorithmic}[1]
+            \Procedure{CandSet}{$rep,thr$} \Comment{AVC\_RVS:38--46}
+            \State $base \gets \{n: rep[n]\ge thr\}$
+            \State $hi \gets \{n \in base: rep[n]\ge AverageRep(rep)\}$
+            \State \Return $hi$ if non-empty; else $base$ if non-empty; else all nodes
+            \EndProcedure
+
+            \Procedure{RVSContext}{$rep,thr$} \Comment{AVC\_RVS:56--65}
+            \State $cand \gets CandSet(rep,thr)$
+            \State \Return $\langle cand,SumRep(rep,cand),RVSKappa(cand,thr),\max(rep)\rangle$
+            \EndProcedure
+            \algstore{abftf12a}
+        \end{algorithmic}
+
+        \vspace{0.4em}
+        \begin{minipage}{0.48\textwidth}
+            \begin{algorithmic}
+                \algrestore{abftf12a}
+                \Procedure{SelectLeader}{$rep,thr,view$} \Comment{AVC\_RVS:67--86}
+                \State $ctx \gets RVSContext(rep,thr)$
+                \State $wins \gets ValidWinners(rep,ctx,view)$
+                \State \Return $PickWinner(rep,wins,ctx,view)$
+                \EndProcedure
+
+                \Procedure{LeaderEvidence}{$rep,thr,view,ldr$} \Comment{AVC\_RVS:88--100}
+                \State $ctx \gets RVSContext(rep,thr)$
+                \State $r \gets SortitionResult(rep,ldr,ctx,view)$
+                \State \Return $\langle r.ticket,r.strikes,r.proof\rangle$
+                \EndProcedure
+                \algstore{abftf12b}
+            \end{algorithmic}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.48\textwidth}
+            \begin{algorithmic}
+                \algrestore{abftf12b}
+                \Procedure{VerifyLeader}{$rep,thr,view,ldr,ev$} \Comment{AVC\_RVS:102--139}
+                \State $ctx \gets RVSContext(rep,thr)$
+                \State $r \gets SortitionResult(rep,ldr,ctx,view)$
+                \State $ok \gets SortitionVerify(rep,ldr,ctx,view,r)$
+                \State \Return $(ldr \in ctx.cand)\land ok$
+                \Statex \hspace{\algorithmicindent}$\land\ (ev=\langle r.ticket,r.strikes,r.proof\rangle)$
+                \EndProcedure
+
+                \Procedure{DecayUpdate}{$rep,n,h,m,a,b$} \Comment{AVC\_RVS:141--160}
+                \State $obs \gets$ m if h else 0
+                \State \Return $DecayUpdateByObservation(\ldots)$
+                \Statex \hspace{\algorithmicindent}with arguments $(rep,n,obs,m,a,b)$
+                \EndProcedure
+            \end{algorithmic}
+        \end{minipage}
+    \end{boxedminipage}
+    \caption{TLA+ support definitions for AVC and RVS.}
+    \label{fig:abft-avc-rvs-spec}
+\end{figure*}
+
+\begin{figure*}[!ht]
+    \footnotesize
+    \begin{boxedminipage}[t]{\textwidth}
+        \textbf{Local variables:}
+        \setlist{nolistsep}
+        \begin{itemize}[noitemsep]
+            \item[] APS config $cfg=[batchSize,pipelineDepth,timeout]$
+            \item[] scheduler state $\in\{\texttt{Monitor,Sample,Estimate,Explore,Deploy}\}$
+            \item[] mempool state: $pool,age,hotTx,warmTx,agingThreshold$
+        \end{itemize}
+
+        \begin{algorithmic}[1]
+            \Procedure{NetFeasible}{$cfg,net$} \Comment{APS\_Mempool:17--24}
+            \If{$net=\texttt{Unstable}$}
+            \State \Return $(cfg.timeout\ge2)\land(cfg.batchSize\le2)\land(cfg.pipelineDepth\le2)$
+            \Else
+            \State \Return $(cfg.timeout\ge1)\land(cfg.batchSize\ge1)\land(cfg.pipelineDepth\ge1)$
+            \EndIf
+            \EndProcedure
+
+            \Procedure{Perf}{$cfg,net$} \Comment{APS\_Mempool:26--40}
+            \State \Return $2\cdot LatencyScore(cfg,net)-ThroughputScore(cfg)$
+            \EndProcedure
+            \algstore{abftf13a}
+        \end{algorithmic}
+
+        \vspace{0.4em}
+        \begin{minipage}{0.48\textwidth}
+            \begin{algorithmic}
+                \algrestore{abftf13a}
+                \Procedure{NextSched}{$st$} \Comment{APS\_Mempool:47--52}
+                \State \Return Monitor $\to$ Sample $\to$ Estimate $\to$ Explore $\to$ Deploy $\to$ Monitor
+                \EndProcedure
+
+                \Procedure{Prio}{$tx,age,hot,warm,th$} \Comment{APS\_Mempool:56--59}
+                \State \Return High if $(tx\in hot)\lor(age[tx]\ge th)$
+                \Statex \hspace{\algorithmicindent}else Mid if $(tx\in warm)$ else Low
+                \EndProcedure
+
+                \Procedure{Front}{$pool,age,hot,warm,th$} \Comment{APS\_Mempool:65--93}
+                \State $(hi,mid,lo)\gets$ partition by \Call{Prio}{$\cdot$}
+                \State \Return $hi$ if non-empty; else $mid$ if non-empty; else $lo$
+                \EndProcedure
+                \algstore{abftf13b}
+            \end{algorithmic}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.48\textwidth}
+            \begin{algorithmic}
+                \algrestore{abftf13b}
+                \Procedure{PickBatch}{$pool,age,hot,warm,th,lim$} \Comment{APS\_Mempool:95--100}
+                \State $front \gets Front(pool,age,hot,warm,th)$
+                \State \Return non-empty $chosen\subseteq front$ with $|chosen|\le lim$
+                \EndProcedure
+
+                \Procedure{Recover}{$abst,valid$} \Comment{APS\_Mempool:102--103}
+                \State \Return $abst \cap valid$
+                \EndProcedure
+
+                \Procedure{BumpAge}{$age,tx,maxAge$} \Comment{APS\_Mempool:105--109}
+                \State \Return bounded age increment; reset on commit
+                \EndProcedure
+            \end{algorithmic}
+        \end{minipage}
+    \end{boxedminipage}
+    \caption{TLA+ support definitions for APS and mempool processing.}
+    \label{fig:abft-aps-mempool-spec}
+\end{figure*}
+
+\begin{figure*}[!ht]
+    \footnotesize
+    \begin{boxedminipage}[t]{\textwidth}
+        \textbf{Local variables:}
+        \setlist{nolistsep}
+        \begin{itemize}[noitemsep]
+            \item[] safety invariants: $I1,\ldots,I13$
+            \item[] liveness goals: $L1$ (one commit), $L2$ (two commits), $L3$ (infinite collect), $L4$ (view progress)
+            \item[] macros: \texttt{Safety}, \texttt{Liveness}, wrapper checks
+        \end{itemize}
+
+        \begin{algorithmic}[1]
+            \Procedure{SafetyProfile}{} \Comment{Properties:22--35}
+            \State \Return $(I1\land I2\land I3\land I4\land I5\land I6)$
+            \Statex \hspace{\algorithmicindent}$\land (I7\land I8\land I9\land I10\land I11\land I12\land I13)$
+            \EndProcedure
+
+            \Procedure{Safety}{} \Comment{Properties:44}
+            \State \Return SafetyProfile
+            \EndProcedure
+            \algstore{abftf14a}
+        \end{algorithmic}
+
+        \vspace{0.4em}
+        \begin{minipage}{0.48\textwidth}
+            \begin{algorithmic}
+                \algrestore{abftf14a}
+                \Procedure{Liveness}{} \Comment{Properties:48}
+                \State \Return $L2$
+                \EndProcedure
+
+                \Procedure{LiveSet}{} \Comment{Properties:37--40}
+                \State \Return $\{L1,L2,L3,L4\}$
+                \EndProcedure
+                \algstore{abftf14b}
+            \end{algorithmic}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.48\textwidth}
+            \begin{algorithmic}
+                \algrestore{abftf14b}
+                \Procedure{ClaimBoundary}{} \Comment{explicit boundary}
+                \State \Return finite-domain TLC checks
+                \Statex \hspace{\algorithmicindent}$+$ fairness-based eventual synchrony
+                \Statex \hspace{\algorithmicindent}$+$ bounded adaptive perturbation model
+                \EndProcedure
+
+                \Procedure{ReportedClaim}{}
+                \State \Return all explored executions satisfy safety and liveness
+                \EndProcedure
+            \end{algorithmic}
+        \end{minipage}
+    \end{boxedminipage}
+    \caption{TLA+ formalization of AdaptiveBFT safety and liveness properties.}
+    \label{fig:abft-properties-spec}
+\end{figure*}

@@ -1,0 +1,25 @@
+\paragraph{Formal-verification claim boundary.}
+Our artifact provides a reviewer-reproducible bounded formal verification
+campaign for AdaptiveBFT in TLA+, with explicit assumptions and explicit
+non-claims. Concretely, safety and liveness are checked over finite domains
+using TLC, and complemented by machine-checked theorem-track artifacts in
+TLAPS/SANY under a stated assumption envelope (eventual synchrony/fairness,
+bounded adaptive adversary, and symbolic cryptographic abstraction).
+Accordingly, our validated claim is:
+\emph{under explicit assumptions, AdaptiveBFT satisfies the checked
+safety/liveness properties in systematically explored bounded executions, with
+reproducible proof-track evidence}.
+We do not claim a closed full-concrete unbounded proof in this artifact release.
+
+\paragraph{Reproducibility path.}
+The release can be reproduced via:
+\texttt{make gate-strong},
+\texttt{make bundle},
+\texttt{make release-status},
+\texttt{make fastlane FASTLANE\_SKIP\_BUNDLE=1},
+\texttt{make claim-check},
+and \texttt{make check-sync}.
+The consolidated release dashboard is in
+\texttt{docs/results/release\_status\_latest.md}, and the
+submission-ready summary is in
+\texttt{docs/results/submission\_rc\_latest.md}.

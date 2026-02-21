@@ -1,0 +1,38 @@
+# TLC runtime artifacts
+states/
+models/states/
+models/*_TTrace_*.tla
+models/*_TTrace_*.bin
+models/*.st
+models/*.fp
+models/*.chkpt
+models/nodes_0
+models/ptrs_0
+
+# Local run logs
+models/*.out
+!models/_latest_*.out
+specifications/.tlacache/
+scripts/__pycache__/
+
+# Keep only lightweight latest reproducibility snapshots in docs/results
+docs/results/*
+!docs/results/*latest*
+
+# TLATeX / LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.dvi
+*.ps
+*.tlatex.tla
+/AdaptiveBFT.tex
+/AdaptiveBFT_Types.tex
+modules/*.aux
+modules/*.log
+modules/*.tex
+APPENDIX_B_source.pdf
+
+# Keep PDF outputs optional; uncomment if you do not want generated PDFs tracked
+# *.pdf
+# modules/*.pdf
