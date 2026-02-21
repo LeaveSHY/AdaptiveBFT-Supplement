@@ -6,7 +6,6 @@ Paper appendices included in this repository:
 
 - `APPENDIX A.pdf`: cryptographic security proof appendix for AdaptiveBFT.
 - `APPENDIX B.pdf`: TLA+ Formal Specification and Verification appendix.
-- `APPENDIX_B_source.tex`: build source of Appendix B (pulls `docs/formal_figures.tex` and `docs/verification_tables.tex`).
 
 This repository is a reproducible AdaptiveBFT verification suite with:
 

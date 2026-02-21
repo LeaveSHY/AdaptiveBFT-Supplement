@@ -25,13 +25,13 @@ docs/results/*
 *.out
 *.dvi
 *.ps
+*.synctex.gz
 *.tlatex.tla
 /AdaptiveBFT.tex
 /AdaptiveBFT_Types.tex
 modules/*.aux
 modules/*.log
 modules/*.tex
-APPENDIX_B_source.pdf
 
 # Keep PDF outputs optional; uncomment if you do not want generated PDFs tracked
 # *.pdf

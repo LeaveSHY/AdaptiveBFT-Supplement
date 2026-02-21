@@ -44,11 +44,6 @@ AdaptiveBFT-Formal-Verification/
 |  |- MC_AdaptiveAttack_N7LITE.cfg
 |  |- MC_LivenessAPS.cfg
 |  |- MC_LivenessAPS.tla
-|  |- MC_LivenessAPS_MV3.cfg
-|  |- MC_LivenessAPS_MV4.cfg
-|  |- MC_LivenessAPS_MV5.cfg
-|  |- MC_LivenessAPS_N7.cfg
-|  |- MC_LivenessAPS_N7LITE.cfg
 |  |- MC_LivenessAPSAttack.cfg
 |  |- MC_LivenessAPSAttack.tla
 |  |- MC_LivenessAPSAttack_MV3.cfg
@@ -56,6 +51,11 @@ AdaptiveBFT-Formal-Verification/
 |  |- MC_LivenessAPSAttack_MV5.cfg
 |  |- MC_LivenessAPSAttack_N7.cfg
 |  |- MC_LivenessAPSAttack_N7LITE.cfg
+|  |- MC_LivenessAPS_MV3.cfg
+|  |- MC_LivenessAPS_MV4.cfg
+|  |- MC_LivenessAPS_MV5.cfg
+|  |- MC_LivenessAPS_N7.cfg
+|  |- MC_LivenessAPS_N7LITE.cfg
 |  |- MC_RefinementTransfer.cfg
 |  |- MC_RefinementTransfer.tla
 |  |- MC_RefinementTransfer_MV3.cfg
@@ -109,8 +109,8 @@ AdaptiveBFT-Formal-Verification/
 |  |  |- Functions.tla
 |  |  |- Mempool.tla
 |  |  |- NaturalsInduction.tla
-|  |  |- Reputation_Game.tla
 |  |  |- RVS_CryptoAbstraction.tla
+|  |  |- Reputation_Game.tla
 |  |  |- TLAPS.tla
 |  |  `- WellFoundedInduction.tla
 |  |- AdaptiveBFT.tla
@@ -134,13 +134,12 @@ AdaptiveBFT-Formal-Verification/
 |  `- StandardModules/
 |     `- TLC.tla
 |- .gitignore
+|- APPENDIX A.pdf
+|- APPENDIX B.pdf
 |- AdaptiveBFT.pdf
 |- AdaptiveBFT_MainFlow.pdf
 |- AdaptiveBFT_Properties.pdf
 |- AdaptiveBFT_Types.pdf
-|- APPENDIX A.pdf
-|- APPENDIX B.pdf
-|- APPENDIX_B_source.tex
 |- Makefile
 |- README.md
 |- run.sh
