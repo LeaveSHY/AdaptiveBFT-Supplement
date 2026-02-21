@@ -25,6 +25,18 @@ For GitHub submission packaging and a final keep-file manifest, see:
 - `docs/github_submission_manifest.md`
 - `docs/final_repo_tree.txt`
 
+## Citation
+
+```bibtex
+@misc{AdaptiveBFT2026,
+      title={AdaptiveBFT: Achieving Dual-Adaptability for Pipelined Consensus in Large-Scale Networks}, 
+      author={Liang Wang and Liangmin Wang and Xia Feng and Haiqin Wu and Boris Düdder and Lu Liu},
+      year={2026},
+      publisher = {GitHub},
+      howpublished = {\url{https://anonymous.4open.science/r/AdaptiveBFT-Supplement-TON}},
+}
+```
+
 ## Claim Boundary and Roadmap
 
 Before using any \"full correctness\" wording in a paper, read:
